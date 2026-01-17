@@ -9,12 +9,12 @@ session = Session()
 def get_user(username):
     """Finds a user by name (case-insensitive due to formatting)."""
 
-    clean_name = username.strip().upper()
+    clean_name = username.strip().title()
     return session.query(User).filter_by(username=clean_name).first()
 
 def create_user(username):
     """Creates a new user."""
-    clean_name = username.strip().upper()
+    clean_name = username.strip().title()
     
     if get_user(clean_name):
         print(f"User '{clean_name}' already exists.")
@@ -59,20 +59,22 @@ def login():
     raw_name = input("Please enter your name to sign in: ")
 
     while not raw_name:
-        raw_name = input("Name cannot be empty. Please enter your name: ")
+        raw_name = input("Name cannot be empty. \nPlease enter your name: ")
 
     user = get_user(raw_name)
     
     if user:
         print(f"\n Welcome back, {user.username}!")
     else:
-        print(f"\n User '{raw_name.strip().upper()}' not found.")
-        choice = input("   Create new account? (y/n): ").lower()
+        print(f"\n User '{raw_name.strip().title()}' not found.")
+        choice = input("   Create new account? (y/n/q (quit)): ").lower()
         if choice == 'y':
             user = create_user(raw_name)
+        elif choice == 'q':
+            return None
         else:
             print("Login cancelled.")
-            return None
+            return login()
 
     print_user_stats(user)
     return user
