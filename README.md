@@ -91,6 +91,10 @@ handtrack/
 - **OpenCV** - Video capture and display
 - **Kaggle ASL Alphabet Dataset** - Training data source
 
+## Known Limitations
+
+- **Letters J and Z**: These letters require hand movement to form (drawing a "J" or "Z" shape in the air). Since this system uses static hand poses, J and Z cannot be reliably recognized.
+
 ## License
 
 MIT

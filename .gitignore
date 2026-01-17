@@ -60,3 +60,4 @@ checkpoints/
 # Logs
 *.log
 logs/
+asl_data.csv
