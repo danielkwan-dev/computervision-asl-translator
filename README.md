@@ -1,4 +1,4 @@
-# ASL Hand Tracking
+# Real-Time ASL Recognition Engine
 
 Real-time American Sign Language (ASL) letter recognition using hand landmark detection and machine learning.
 
