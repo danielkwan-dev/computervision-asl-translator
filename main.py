@@ -75,11 +75,24 @@ def handtrack():
                     if 97 <= key <= 122: # If 'a' through 'z' is pressed
                         letter = chr(key).upper()
                         
-                        # 1. Normalize (Center the hand at 0,0 relative to wrist)
+                        # 1. Normalize (Center AND Scale)
                         wrist = hand_landmarks[0]
+                        # Calculate the size of the hand (distance between wrist and middle finger base)
+                        # Index 0 is wrist, Index 9 is middle_finger_mcp
+                        scale_factor = ((hand_landmarks[0].x - hand_landmarks[9].x)**2 + 
+                                        (hand_landmarks[0].y - hand_landmarks[9].y)**2 + 
+                                        (hand_landmarks[0].z - hand_landmarks[9].z)**2)**0.5
+                        
+                        if scale_factor == 0: scale_factor = 1 # Prevent divide by zero
+                        
                         row = [letter]
                         for lm in hand_landmarks:
-                            row.extend([lm.x - wrist.x, lm.y - wrist.y, lm.z - wrist.z])
+                            # Center relative to wrist AND divide by scale
+                            row.extend([
+                                (lm.x - wrist.x) / scale_factor,
+                                (lm.y - wrist.y) / scale_factor, 
+                                (lm.z - wrist.z) / scale_factor
+                            ])
                         
                         # 2. Save to CSV
                         with open(DATA_FILE, 'a', newline='') as f:
