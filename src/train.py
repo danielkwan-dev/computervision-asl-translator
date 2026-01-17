@@ -207,7 +207,7 @@ def train_model(
                     'label_to_idx': dataset.label_to_idx,
                     'idx_to_label': dataset.idx_to_label,
                 }, save_path)
-                print(f"  → Saved best model (Val Acc: {val_acc:.2f}%)")
+                print(f"  Saved best model (Val Acc: {val_acc:.2f}%)")
 
     print(f"\nTraining complete! Best validation accuracy: {best_val_acc:.2f}%")
     return model, dataset.idx_to_label
