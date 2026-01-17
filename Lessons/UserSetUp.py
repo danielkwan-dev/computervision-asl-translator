@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 
 engine = create_engine('sqlite:///asl_database.db', echo=False)
@@ -12,22 +12,28 @@ class User(Base):
     username = Column(String, unique=True, nullable=False)
     total_xp = Column(Integer, default=0)
     current_streak = Column(Integer, default=0)
-    
     last_practice_date = Column(DateTime, default=datetime.now)
     
     progress = relationship("UserProgress", back_populates="user")
+
+class Lesson(Base):
+    __tablename__ = 'lessons'
+    
+    id = Column(Integer, primary_key=True)
+    title = Column(String)          # e.g., "The Basics"
+    target_letters = Column(String) # e.g., "A,B,C,D,E"
+    difficulty_level = Column(Integer)
 
 class UserProgress(Base):
     __tablename__ = 'user_progress'
     
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    letter = Column(String)
+    letter = Column(String)         # e.g., "A"
     mastery_score = Column(Integer, default=0)
     
     user = relationship("User", back_populates="progress")
 
-# Create the tables if they don't exist
 def init_db():
     Base.metadata.create_all(engine)
     print("Database initialized successfully.")

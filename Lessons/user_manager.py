@@ -1,11 +1,12 @@
 from sqlalchemy.orm import sessionmaker
-from UserSetUp import engine, User, UserProgress, init_db
+from UserSetUp import engine, Lesson, User, UserProgress, init_db
 from datetime import datetime, timedelta
 import time
 
 Session = sessionmaker(bind=engine)
 session = Session()
 
+# --- USER MANAGEMENT FUNCTIONS ---
 
 def get_user(username):
     """Finds a user by name (case-insensitive due to formatting)."""
@@ -59,20 +60,34 @@ def print_user_stats(user):
     print(f"Last Active:      {user.last_practice_date.strftime('%Y-%m-%d %H:%M')}")
     print("="*30 + "\n")
 
+# --- SIMULATED GAMEPLAY FUNCTIONS ---
+
 def simulate_gameplay(user):
-    """Simulates the test attempts."""
-    print(f"\n🎮 Starting practice session for {user.username}...")
-    time.sleep(1)
+    lesson = get_next_lesson(user)
     
-    print("\n--- Attempt 1: You sign 'A' (Target: A) ---")
-    record_attempt(user.username, "A", True)
-    time.sleep(1)
+    if not lesson:
+        print("\n CONGRATULATIONS! You have completed the entire curriculum!")
+        return
+
+    print(f"\n Current Lesson: {lesson.title}")
+    print(f"   Targets: {lesson.target_letters}")
     
-    print("\n--- Attempt 2: You sign 'B' (Target: B) ---")
-    record_attempt(user.username, "B", False)
-    time.sleep(1)
+    stats = get_lesson_status(user, lesson)
+    print(f" Your Progress: {stats}")
+
+    # Pick the letter they are worst at
+    target_letter = min(stats, key=stats.get)
+    print(f"\nTASK: Please sign the letter '{target_letter}'")
     
-    print("\nSession Complete!")
+    # --- SIMULATION INPUT ---
+    user_input = input(f"(Type '{target_letter}' to simulate success, or anything else to fail): ").upper()
+    
+    if user_input == target_letter:
+        record_attempt(user.username, target_letter, True)
+    else:
+        record_attempt(user.username, target_letter, False)
+        
+    time.sleep(1)
 
 def login():
     """The login screen."""
@@ -100,6 +115,33 @@ def login():
 
     print_user_stats(user)
     return user
+
+
+def main_menu(user):
+    """The main hub for a logged-in user."""
+    while True:
+        print(f"\n--- MAIN MENU ({user.username}) ---")
+        print("1. Start Playing (Simulate)")
+        print("2. Check Stats")
+        print("3. Quit")
+        print("4. Delete Account")
+        
+        choice = input("Select an option (1-4): ")
+        
+        if choice == '1':
+            simulate_gameplay(user)
+        elif choice == '2':
+            print_user_stats(user)
+        elif choice == '3':
+            print("Goodbye!")
+            break
+        elif choice == '4':
+            if delete_user(user.username):
+                break
+        else:
+            print("Invalid option, please try again.")
+
+# --- PROGRESS TRACKING FUNCTIONS ---
 
 def update_streak(user):
     """ Updates the user's practice streak based on last practice date. """
@@ -148,37 +190,58 @@ def record_attempt(username, letter, is_correct):
 
     session.commit()
 
-def main_menu(user):
-    """The main hub for a logged-in user."""
-    while True:
-        print(f"\n--- MAIN MENU ({user.username}) ---")
-        print("1. Start Playing (Simulate)")
-        print("2. Check Stats")
-        print("3. Quit")
-        print("4. Delete Account")
+# Lesson management functions
+
+def get_next_lesson(user):
+    """
+    Finds the first lesson the user hasn't completed yet.
+    """
+    all_lessons = session.query(Lesson).order_by(Lesson.id).all()
+    
+    for lesson in all_lessons:
+        # Check if user has finished ALL letters in this lesson
+        # lesson is 'done' if mastery is >= 80%
+        letters = lesson.target_letters.split(',')
+        completed_letters = 0
         
-        choice = input("Select an option (1-4): ")
+        for letter in letters:
+            progress = session.query(UserProgress).filter_by(
+                user_id=user.id, 
+                letter=letter
+            ).first()
+            
+            if progress and progress.mastery_score >= 80:
+                completed_letters += 1
         
-        if choice == '1':
-            simulate_gameplay(user)
-        elif choice == '2':
-            print_user_stats(user)
-        elif choice == '3':
-            print("Goodbye!")
-            break
-        elif choice == '4':
-            if delete_user(user.username):
-                break
+        if completed_letters < len(letters):
+            return lesson
+            
+    return None # Finished everything
+
+def get_lesson_status(user, lesson):
+    """
+    Returns a dictionary of how well the user knows the current lesson.
+    Example: {'A': 100, 'B': 50, 'C': 0}
+    """
+    status = {}
+    letters = lesson.target_letters.split(',')
+    
+    for letter in letters:
+        progress = session.query(UserProgress).filter_by(
+            user_id=user.id, 
+            letter=letter
+        ).first()
+        
+        if progress:
+            status[letter] = progress.mastery_score
         else:
-            print("Invalid option, please try again.")
+            status[letter] = 0
+            
+    return status
 
 # --- TEST ---
 if __name__ == "__main__":
     init_db()
-    
-    # 1. Login
     current_user = login()
-    
-    # 2. If login successful, go to main menu
     if current_user:
         main_menu(current_user)
