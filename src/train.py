@@ -41,9 +41,15 @@ class ASLLandmarkDataset(Dataset):
         # Load CSV
         df = pd.read_csv(csv_path)
 
-        # Assume last column is label, rest are coordinates
-        self.labels = df.iloc[:, -1].values
-        self.landmarks = df.iloc[:, :-1].values.astype(np.float32)
+        # Check if label is first column (main.py format) or last column
+        if df.columns[0] == 'label':
+            # main.py format: label is first column
+            self.labels = df.iloc[:, 0].values
+            self.landmarks = df.iloc[:, 1:].values.astype(np.float32)
+        else:
+            # Alternative format: label is last column
+            self.labels = df.iloc[:, -1].values
+            self.landmarks = df.iloc[:, :-1].values.astype(np.float32)
 
         # Create label to index mapping
         unique_labels = sorted(set(self.labels))
