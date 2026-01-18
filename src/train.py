@@ -1,14 +1,3 @@
-"""
-Training Script for ASL Landmark Model
-
-Handles the complete pipeline:
-1. Load CSV data
-2. Convert to NumPy arrays
-3. Apply normalization
-4. Convert to PyTorch tensors
-5. Train the model
-"""
-
 import os
 import numpy as np
 import pandas as pd
@@ -17,25 +6,12 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader, random_split
 from pathlib import Path
-
 from model import ASLLandmarkMLP, ASLLandmarkNet, normalize_landmarks, ASL_CLASSES
 
 
 class ASLLandmarkDataset(Dataset):
-    """
-    Dataset class that handles CSV loading and normalization.
-
-    Expected CSV format:
-    - Columns: x0, y0, z0, x1, y1, z1, ..., x20, y20, z20, label
-    - Or: 63 coordinate columns + 1 label column
-    """
 
     def __init__(self, csv_path: str, apply_normalization: bool = True):
-        """
-        Args:
-            csv_path: Path to the CSV file with landmark data
-            apply_normalization: Whether to normalize landmarks (recommended)
-        """
         self.apply_normalization = apply_normalization
 
         # Load CSV
@@ -91,20 +67,6 @@ def train_model(
     save_path: str = None,
     device: str = None
 ):
-    """
-    Train the ASL landmark model.
-
-    Args:
-        csv_path: Path to training CSV file
-        model_type: "mlp" or "cnn"
-        epochs: Number of training epochs
-        batch_size: Batch size for training
-        learning_rate: Learning rate for optimizer
-        val_split: Fraction of data for validation
-        save_path: Where to save the trained model
-        device: "cuda" or "cpu" (auto-detected if None)
-    """
-    # Auto-detect device
     if device is None:
         device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using device: {device}")
