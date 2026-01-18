@@ -51,9 +51,8 @@ wheels/
 Thumbs.db
 desktop.ini
 
-# Model checkpoints (if you generate any)
+# Model checkpoints
 *.ckpt
-*.pth
 *.h5
 checkpoints/
 
