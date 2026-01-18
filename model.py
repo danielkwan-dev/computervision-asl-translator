@@ -88,8 +88,12 @@ ASL_CLASSES = [
 ]
 
 
-def normalize_landmarks(landmarks: np.ndarray) -> np.ndarray:
+def normalize_landmarks(landmarks: np.ndarray, mirror: bool = False) -> np.ndarray:
     landmarks = np.array(landmarks).reshape(21, 3)
+
+    # Mirror x-coordinates if needed (to handle left/right hand)
+    if mirror:
+        landmarks[:, 0] = 1.0 - landmarks[:, 0]
 
     wrist = landmarks[0]
     centered = landmarks - wrist

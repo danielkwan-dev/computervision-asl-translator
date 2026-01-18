@@ -110,8 +110,10 @@ class ASLRecognizer:
 
         landmarks = []
         for lm in hand_landmarks:
+            # Mirror x-coordinate to match right-hand training data
+            # (wrist.x - lm.x) instead of (lm.x - wrist.x) flips the hand
             landmarks.extend([
-                (lm.x - wrist.x) / scale_factor,
+                (wrist.x - lm.x) / scale_factor,
                 (lm.y - wrist.y) / scale_factor,
                 (lm.z - wrist.z) / scale_factor
             ])

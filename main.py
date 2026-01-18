@@ -53,11 +53,11 @@ class ASLInferenceBridge:
             print(f"❌ ERROR: Could not find '{model_path}'.")
             self.model = None
 
-    def predict(self, landmarks_list):
+    def predict(self, landmarks_list, mirror=True):
         if not self.model: return "?", 0.0
-        
+
         landmarks_np = np.array(landmarks_list, dtype=np.float32)
-        norm_landmarks = normalize_landmarks(landmarks_np)
+        norm_landmarks = normalize_landmarks(landmarks_np, mirror=mirror)
         input_tensor = torch.tensor(norm_landmarks, dtype=torch.float32).unsqueeze(0).to(self.device)
         
         with torch.no_grad():
