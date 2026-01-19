@@ -7,7 +7,7 @@ asl_alphabet_train/
 venv/
 env/
 ENV/
-.venv
+.venv/
 
 # Python cache files
 __pycache__/

@@ -1,7 +1,7 @@
 import os
+import torch
 import numpy as np
 import pandas as pd
-import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader, random_split
@@ -10,7 +10,6 @@ from model import ASLLandmarkMLP, ASLLandmarkNet, normalize_landmarks, ASL_CLASS
 
 
 class ASLLandmarkDataset(Dataset):
-
     def __init__(self, csv_path: str, apply_normalization: bool = True):
         self.apply_normalization = apply_normalization
 

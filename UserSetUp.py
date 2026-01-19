@@ -1,9 +1,11 @@
+from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
-from datetime import datetime
+
 
 engine = create_engine('sqlite:///asl_database.db', echo=False)
 Base = declarative_base()
+
 
 class User(Base):
     __tablename__ = 'users'
@@ -16,6 +18,7 @@ class User(Base):
     
     progress = relationship("UserProgress", back_populates="user")
 
+
 class Lesson(Base):
     __tablename__ = 'lessons'
     
@@ -23,6 +26,7 @@ class Lesson(Base):
     title = Column(String)          # e.g., "The Basics"
     target_letters = Column(String) # e.g., "A,B,C,D,E"
     difficulty_level = Column(Integer)
+
 
 class UserProgress(Base):
     __tablename__ = 'user_progress'
@@ -34,9 +38,11 @@ class UserProgress(Base):
     
     user = relationship("User", back_populates="progress")
 
+
 def init_db():
     Base.metadata.create_all(engine)
     print("Database initialized successfully.")
+
 
 if __name__ == "__main__":
     init_db()

@@ -5,11 +5,10 @@ import numpy as np
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-
 from model import ASLLandmarkMLP, ASLLandmarkNet, ASL_CLASSES, get_model
 
-HAND_LANDMARKER_PATH = "hand_landmarker.task"
 
+HAND_LANDMARKER_PATH = "hand_landmarker.task"
 HAND_CONNECTIONS = [
     (0, 1), (1, 5), (5, 9), (9, 13), (13, 17), (0, 17),
     (1, 2), (2, 3), (3, 4),

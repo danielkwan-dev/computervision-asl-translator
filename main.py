@@ -1,26 +1,21 @@
 import cv2
-import mediapipe as mp
+import sys
 import time
 import torch
-import numpy as np
 import subprocess
-import sys
+import user_manager
+import numpy as np
+import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-
-# --- IMPORTS ---
-import user_manager
-from model import get_model, normalize_landmarks, ASL_CLASSES
 from inference import HoldToConfirm
+from model import get_model, normalize_landmarks, ASL_CLASSES
 
-# --- CONFIGURATION ---
+
 MODEL_PATH = "hand_landmarker.task"
 TRAINED_MODEL_PATH = "asl_model.pth"
-
-# --- VISUAL STYLE ---
 COLOR_DOT = (0, 255, 255)   # Yellow
 COLOR_LINE = (0, 0, 255)    # Red
-
 HAND_CONNECTIONS = [
     (0, 1), (1, 5), (5, 9), (9, 13), (13, 17), (0, 17),
     (1, 2), (2, 3), (3, 4),
@@ -30,7 +25,7 @@ HAND_CONNECTIONS = [
     (17, 18), (18, 19), (19, 20),
 ]
 
-# --- AI BRIDGE ---
+
 class ASLInferenceBridge:
     def __init__(self, model_path):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -69,7 +64,7 @@ class ASLInferenceBridge:
         label = self.idx_to_label.get(idx, "?") if isinstance(self.idx_to_label, dict) else ASL_CLASSES[idx]
         return label, confidence.item()
 
-# --- DRAWING HELPER ---
+
 def draw_skeleton(frame, hand_landmarks):
     height, width, _ = frame.shape
     for start_idx, end_idx in HAND_CONNECTIONS:
@@ -82,7 +77,7 @@ def draw_skeleton(frame, hand_landmarks):
         cx, cy = int(lm.x * width), int(lm.y * height)
         cv2.circle(frame, (cx, cy), 5, COLOR_DOT, -1)
 
-# --- GAME MODE: PRACTICE ---
+
 def practice_mode(user, ai_brain, specific_lesson=None):
     base_options = python.BaseOptions(model_asset_path=MODEL_PATH)
     options = vision.HandLandmarkerOptions(
@@ -170,7 +165,7 @@ def practice_mode(user, ai_brain, specific_lesson=None):
     cap.release()
     cv2.destroyAllWindows()
 
-# --- HELPER: LAUNCH SUBPROCESS ---
+
 def run_playground_script():
     """
     Launches the standalone inference.py script exactly as requested.
@@ -189,7 +184,7 @@ def run_playground_script():
     except Exception as e:
         print(f"❌ Error launching playground: {e}")
 
-# --- THE MAIN MENU LOOP ---
+
 def main():
     print("--- LAUNCHING ASL TRAINER ---")
     current_user = user_manager.login()

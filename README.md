@@ -35,11 +35,10 @@ handtrack/
 ├── hand_landmarker.task    # MediaPipe hand model
 ├── requirements.txt
 ├── asl_model.pth           # Pre-trained model
-└── src/
-    ├── model.py            # Neural network architecture
-    ├── train.py            # Model training
-    ├── inference.py        # Standalone recognition app
-    └── convert_images.py   # Dataset conversion utility
+├── model.py            # Neural network architecture
+├── train.py            # Model training
+├── inference.py        # Standalone recognition app
+└── convert_images.py   # Dataset conversion utility
 ```
 ## Run Locally
 
