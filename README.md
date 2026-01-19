@@ -6,9 +6,9 @@ An American Sign Laguange recongnition engine that works in real-time by using t
 
 ## Authors
 
-- [**@JummyJoeJackson**](https://github.com/JummyJoeJackson)
-- [**@danielkwan-dev**](https://github.com/danielkwan-dev)
-- [**@RatanotamKehal**](https://github.com/RatanotamKehal)
+- [**@JummyJoeJackson**](https://github.com/JummyJoeJackson) (Handtracking)
+- [**@danielkwan-dev**](https://github.com/danielkwan-dev) (ASL Recognition)
+- [**@RatanotamKehal**](https://github.com/RatanotamKehal) (Game & Database)
 
 
 ## Features
