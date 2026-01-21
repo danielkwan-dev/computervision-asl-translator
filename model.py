@@ -4,6 +4,13 @@ import torch.nn.functional as F
 import numpy as np
 
 
+ASL_CLASSES = [
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+    'U', 'V', 'W', 'X', 'Y', 'Z', 'del', 'nothing', 'space'
+]
+
+
 class ASLLandmarkNet(nn.Module):
     def __init__(self, num_landmarks: int = 21, num_coords: int = 3, num_classes: int = 29):
         super(ASLLandmarkNet, self).__init__()
@@ -79,13 +86,6 @@ class ASLLandmarkMLP(nn.Module):
             probs = F.softmax(logits, dim=1)
             confidence, predicted = torch.max(probs, 1)
         return predicted, confidence
-
-
-ASL_CLASSES = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-    'U', 'V', 'W', 'X', 'Y', 'Z', 'del', 'nothing', 'space'
-]
 
 
 def normalize_landmarks(landmarks: np.ndarray, mirror: bool = False) -> np.ndarray:

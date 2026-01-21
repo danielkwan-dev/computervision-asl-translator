@@ -1,9 +1,10 @@
 from sqlalchemy.orm import sessionmaker
-# Import specific classes directly
 from UserSetUp import engine, Lesson, init_db
+
 
 Session = sessionmaker(bind=engine)
 session = Session()
+
 
 def create_lessons():
     # Initialize tables (Create Lesson table if it doesn't exist)
@@ -34,6 +35,7 @@ def create_lessons():
     
     session.commit()
     print("Successfully added 5 lessons!")
+
 
 if __name__ == "__main__":
     create_lessons()

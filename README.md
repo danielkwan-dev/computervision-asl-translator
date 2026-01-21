@@ -1,5 +1,5 @@
 
-# Real-Time ASL Recognition Engine
+# SignCLI | Real-Time ASL Recognition Engine
 
 An American Sign Laguange recongnition engine that works in real-time by using two models. One for recognizing hands and their shapes, and another custom convolutional neural network for recognizing which gesture corresponds to each letter.
 
@@ -35,11 +35,10 @@ handtrack/
 ├── hand_landmarker.task    # MediaPipe hand model
 ├── requirements.txt
 ├── asl_model.pth           # Pre-trained model
-└── src/
-    ├── model.py            # Neural network architecture
-    ├── train.py            # Model training
-    ├── inference.py        # Standalone recognition app
-    └── convert_images.py   # Dataset conversion utility
+├── model.py            # Neural network architecture
+├── train.py            # Model training
+├── inference.py        # Standalone recognition app
+└── convert_images.py   # Dataset conversion utility
 ```
 ## Run Locally
 

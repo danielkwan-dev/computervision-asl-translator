@@ -1,10 +1,12 @@
-import cv2
-import csv
 import os
+import csv
+import cv2
+import argparse
+import mediapipe as mp
 from pathlib import Path
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-import mediapipe as mp
+
 
 HAND_LANDMARKER_PATH = "hand_landmarker.task"
 OUTPUT_CSV = "asl_data.csv"
@@ -24,7 +26,6 @@ def extract_and_normalize(landmarker, image_path):
     if cv_img is None:
         return None
 
-    # Add padding and enhance contrast (same as asl.py)
     cv_img = cv2.copyMakeBorder(cv_img, 50, 50, 50, 50, cv2.BORDER_CONSTANT, value=[0, 0, 0])
     cv_img = cv2.convertScaleAbs(cv_img, alpha=1.3, beta=10)
     rgb_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
@@ -34,10 +35,8 @@ def extract_and_normalize(landmarker, image_path):
 
     if not results.hand_landmarks:
         return None
-
     hand_landmarks = results.hand_landmarks[0]
 
-    # Normalize same way as main.py: center on wrist + scale
     wrist = hand_landmarks[0]
     middle_mcp = hand_landmarks[9]
 
@@ -119,8 +118,6 @@ def convert_dataset(data_dir, output_csv, max_per_class=None):
 
 
 if __name__ == "__main__":
-    import argparse
-
     parser = argparse.ArgumentParser(description="Convert ASL images to landmarks CSV")
     parser.add_argument("--data-dir", type=str, default="data/asl_alphabet",
                         help="Path to dataset folder")
